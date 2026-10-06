@@ -112,22 +112,7 @@ export interface Database {
           status?: string;
           created_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "orders_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "order_items_order_id_fkey";
-            columns: ["id"];
-            isOneToOne: false;
-            referencedRelation: "order_items";
-            referencedColumns: ["order_id"];
-          }
-        ];
+        Relationships: [];
       };
       order_items: {
         Row: OrderItem;
@@ -149,22 +134,7 @@ export interface Database {
           quantity?: number;
           created_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "order_items_order_id_fkey";
-            columns: ["order_id"];
-            isOneToOne: false;
-            referencedRelation: "orders";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "order_items_product_id_fkey",
-            columns: ["product_id"];
-            isOneToOne: false;
-            referencedRelation: "products";
-            referencedColumns: ["id"];
-          }
-        ];
+        Relationships: [];
       };
       cart_items: {
         Row: CartItemRow;
@@ -184,22 +154,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "cart_items_product_id_fkey";
-            columns: ["product_id"];
-            isOneToOne: false;
-            referencedRelation: "products";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "cart_items_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
@@ -221,6 +176,5 @@ export interface Database {
         Returns: undefined;
       };
     };
-    Enums: Record<string, never>;
   };
 }

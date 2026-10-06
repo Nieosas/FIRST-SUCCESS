@@ -1,5 +1,3 @@
-"use client";
-
 import {
   createContext,
   useCallback,
@@ -10,9 +8,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { RealtimeChannel, User } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import type { RealtimeChannel } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
+import { isSupabaseConfigured } from "../lib/env";
+import { useAuth } from "./AuthContext";
 
 export interface CartItem {
   productId: string;
@@ -39,10 +39,10 @@ const STORAGE_KEY = "phoendeck-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const configured = isSupabaseConfigured();
+  const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
-  const [user, setUser] = useState<User | null>(null);
 
-  const userRef = useRef<User | null>(null);
+  const userRef = useRef(user);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const reloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -50,55 +50,57 @@ export function CartProvider({ children }: { children: ReactNode }) {
     userRef.current = user;
   }, [user]);
 
-  const readLocalCart = useCallback((): CartItem[] => {
+  const readLocalCart = useCallback(async (): Promise<CartItem[]> => {
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const raw = await AsyncStorage.getItem(STORAGE_KEY);
       return raw ? (JSON.parse(raw) as CartItem[]) : [];
     } catch {
       return [];
     }
   }, []);
 
-  const writeLocalCart = useCallback((next: CartItem[]) => {
+  const writeLocalCart = useCallback(async (next: CartItem[]) => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
-      // ignore quota / privacy-mode errors
+      // ignore storage errors
     }
   }, []);
 
-  const loadServerCart = useCallback(async (uid: string): Promise<CartItem[]> => {
-    const supabase = createClient();
-    const { data: rows } = await supabase
-      .from("cart_items")
-      .select("product_id, quantity")
-      .eq("user_id", uid);
+  const loadServerCart = useCallback(
+    async (uid: string): Promise<CartItem[]> => {
+      const { data: rows } = await supabase
+        .from("cart_items")
+        .select("product_id, quantity")
+        .eq("user_id", uid);
 
-    if (!rows || rows.length === 0) return [];
+      if (!rows || rows.length === 0) return [];
 
-    const { data: products } = await supabase
-      .from("products")
-      .select("id, name, slug, price_cents, image_url")
-      .in(
-        "id",
-        rows.map((r) => r.product_id)
-      );
+      const { data: products } = await supabase
+        .from("products")
+        .select("id, name, slug, price_cents, image_url")
+        .in(
+          "id",
+          rows.map((r) => r.product_id)
+        );
 
-    const map = new Map((products ?? []).map((p) => [p.id, p]));
-    return rows
-      .filter((r) => map.has(r.product_id))
-      .map((r) => {
-        const p = map.get(r.product_id)!;
-        return {
-          productId: p.id,
-          name: p.name,
-          slug: p.slug,
-          priceCents: p.price_cents,
-          imageUrl: p.image_url,
-          quantity: r.quantity,
-        };
-      });
-  }, []);
+      const map = new Map((products ?? []).map((p) => [p.id, p]));
+      return rows
+        .filter((r) => map.has(r.product_id))
+        .map((r) => {
+          const p = map.get(r.product_id)!;
+          return {
+            productId: p.id,
+            name: p.name,
+            slug: p.slug,
+            priceCents: p.price_cents,
+            imageUrl: p.image_url,
+            quantity: r.quantity,
+          };
+        });
+    },
+    []
+  );
 
   const reloadServerCart = useCallback(
     (uid: string) => {
@@ -113,12 +115,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!configured) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration of the guest cart from localStorage
-      setItems(readLocalCart());
+      readLocalCart().then(setItems);
       return;
     }
 
-    const supabase = createClient();
     let cancelled = false;
 
     async function syncForUser(uid: string | null, mergeGuest: boolean) {
@@ -129,7 +129,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       if (uid) {
         if (mergeGuest) {
-          const guest = readLocalCart();
+          const guest = await readLocalCart();
           if (guest.length > 0) {
             for (const item of guest) {
               await supabase.rpc("add_cart_item", {
@@ -137,11 +137,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 p_quantity: item.quantity,
               });
             }
-            writeLocalCart([]);
+            await writeLocalCart([]);
           }
-        } else {
-          // Returning signed-in user: the server cart is the source of truth.
-          writeLocalCart([]);
         }
 
         const serverItems = await loadServerCart(uid);
@@ -162,35 +159,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
           .subscribe();
         channelRef.current = channel;
       } else {
-        if (!cancelled) setItems(readLocalCart());
+        const local = await readLocalCart();
+        if (!cancelled) setItems(local);
       }
     }
 
-    supabase.auth.getUser().then(({ data }) => {
-      if (cancelled) return;
-      const u = data.user ?? null;
-      setUser(u);
-      void syncForUser(u?.id ?? null, false);
-    });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (cancelled) return;
-      if (event === "INITIAL_SESSION") return; // handled by getUser above
-      const u = session?.user ?? null;
-      setUser(u);
-      void syncForUser(u?.id ?? null, event === "SIGNED_IN");
-    });
+    if (user) {
+      void syncForUser(user.id, true);
+    } else {
+      readLocalCart().then((local) => {
+        if (!cancelled) setItems(local);
+      });
+    }
 
     return () => {
       cancelled = true;
       if (channelRef.current) supabase.removeChannel(channelRef.current);
-      sub.subscription.unsubscribe();
     };
-  }, [configured, readLocalCart, writeLocalCart, loadServerCart, reloadServerCart]);
+  }, [
+    configured,
+    user,
+    readLocalCart,
+    writeLocalCart,
+    loadServerCart,
+    reloadServerCart,
+  ]);
 
   function addItem(item: Omit<CartItem, "quantity">, quantity = 1) {
     if (configured && userRef.current) {
-      const supabase = createClient();
       setItems((prev) => {
         const existing = prev.find((i) => i.productId === item.productId);
         if (existing) {
@@ -222,14 +218,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
               : i
           )
         : [...prev, { ...item, quantity }];
-      writeLocalCart(next);
+      void writeLocalCart(next);
       return next;
     });
   }
 
   function removeItem(productId: string) {
     if (configured && userRef.current) {
-      const supabase = createClient();
       setItems((prev) => prev.filter((i) => i.productId !== productId));
       supabase
         .rpc("remove_cart_item", { p_product_id: productId })
@@ -241,14 +236,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     setItems((prev) => {
       const next = prev.filter((i) => i.productId !== productId);
-      writeLocalCart(next);
+      void writeLocalCart(next);
       return next;
     });
   }
 
   function setQuantity(productId: string, quantity: number) {
     if (configured && userRef.current) {
-      const supabase = createClient();
       if (quantity <= 0) {
         setItems((prev) => prev.filter((i) => i.productId !== productId));
       } else {
@@ -272,7 +266,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (quantity <= 0) {
       setItems((prev) => {
         const next = prev.filter((i) => i.productId !== productId);
-        writeLocalCart(next);
+        void writeLocalCart(next);
         return next;
       });
       return;
@@ -281,14 +275,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const next = prev.map((i) =>
         i.productId === productId ? { ...i, quantity } : i
       );
-      writeLocalCart(next);
+      void writeLocalCart(next);
       return next;
     });
   }
 
   function clear() {
     if (configured && userRef.current) {
-      const supabase = createClient();
       setItems([]);
       supabase.rpc("clear_cart").then(({ error }) => {
         if (error) console.error(error);
@@ -297,7 +290,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     setItems([]);
-    writeLocalCart([]);
+    void writeLocalCart([]);
   }
 
   const value = useMemo<CartContextValue>(() => {

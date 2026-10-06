@@ -109,14 +109,30 @@ export async function POST(request: Request) {
   const total = subtotal + shipping;
 
   let userId: string | null = null;
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    userId = user?.id ?? null;
-  } catch {
-    userId = null;
+
+  // Mobile clients don't share cookies with the web app, so accept the user's
+  // Supabase access token via Authorization header when present.
+  const authHeader = request.headers.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice("Bearer ".length);
+    try {
+      const { data } = await admin.auth.getUser(token);
+      userId = data.user?.id ?? null;
+    } catch {
+      userId = null;
+    }
+  }
+
+  if (!userId) {
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      userId = user?.id ?? null;
+    } catch {
+      userId = null;
+    }
   }
 
   const { data: order, error: orderError } = await admin

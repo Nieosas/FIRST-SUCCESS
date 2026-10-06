@@ -90,6 +90,106 @@ create policy "users can read their own order items"
   );
 
 -- ---------------------------------------------------------------------------
+-- Cart (per-user, shared across web + mobile)
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.cart_items (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users (id) on delete cascade,
+  product_id uuid not null references public.products (id) on delete cascade,
+  quantity   integer not null default 1 check (quantity > 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint cart_items_user_product_key unique (user_id, product_id)
+);
+
+create index if not exists cart_items_user_id_idx on public.cart_items (user_id);
+
+alter table public.cart_items enable row level security;
+
+-- Users can only read/write their own cart rows.
+drop policy if exists "users can read their own cart items" on public.cart_items;
+create policy "users can read their own cart items"
+  on public.cart_items for select using (auth.uid() = user_id);
+
+drop policy if exists "users can insert their own cart items" on public.cart_items;
+create policy "users can insert their own cart items"
+  on public.cart_items for insert with check (auth.uid() = user_id);
+
+drop policy if exists "users can update their own cart items" on public.cart_items;
+create policy "users can update their own cart items"
+  on public.cart_items for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop policy if exists "users can delete their own cart items" on public.cart_items;
+create policy "users can delete their own cart items"
+  on public.cart_items for delete using (auth.uid() = user_id);
+
+-- Expose cart_items to Supabase Realtime so cart changes sync instantly
+-- across the web app and the mobile app. Idempotent.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'cart_items'
+  ) then
+    alter publication supabase_realtime add table public.cart_items;
+  end if;
+end;
+$$;
+
+-- Atomic cart helpers. They run with the caller's privileges (security
+-- invoker), so row-level security still applies and auth.uid() scopes every
+-- operation to the signed-in user.
+
+create or replace function public.add_cart_item(p_product_id uuid, p_quantity integer default 1)
+returns void
+language sql
+set search_path = public
+as $$
+  insert into public.cart_items (user_id, product_id, quantity)
+  values (auth.uid(), p_product_id, greatest(coalesce(p_quantity, 1), 1))
+  on conflict (user_id, product_id)
+  do update set quantity = public.cart_items.quantity + excluded.quantity, updated_at = now();
+$$;
+
+create or replace function public.set_cart_quantity(p_product_id uuid, p_quantity integer)
+returns void
+language plpgsql
+set search_path = public
+as $$
+begin
+  if coalesce(p_quantity, 0) <= 0 then
+    delete from public.cart_items
+    where user_id = auth.uid() and product_id = p_product_id;
+  else
+    insert into public.cart_items (user_id, product_id, quantity)
+    values (auth.uid(), p_product_id, p_quantity)
+    on conflict (user_id, product_id)
+    do update set quantity = excluded.quantity, updated_at = now();
+  end if;
+end;
+$$;
+
+create or replace function public.remove_cart_item(p_product_id uuid)
+returns void
+language sql
+set search_path = public
+as $$
+  delete from public.cart_items
+  where user_id = auth.uid() and product_id = p_product_id;
+$$;
+
+create or replace function public.clear_cart()
+returns void
+language sql
+set search_path = public
+as $$
+  delete from public.cart_items where user_id = auth.uid();
+$$;
+
+-- ---------------------------------------------------------------------------
 -- Seed data
 -- ---------------------------------------------------------------------------
 

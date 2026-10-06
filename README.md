@@ -4,11 +4,16 @@ A full-stack phone accessories shop built with **Next.js 16 (App Router) + TypeS
 
 ## Features
 
-- Product catalog, product detail pages, and a cart (persisted in `localStorage`)
+- Product catalog, product detail pages, and a cart
+- **Shared, cross-device cart** — signed-in users' carts are stored in a Supabase
+  `cart_items` table and sync instantly (Supabase Realtime) between the website and
+  the mobile app. Guests fall back to `localStorage`.
 - Checkout page that persists orders + order items to Supabase (server-side price calculation, service-role writes)
 - Order history for signed-in users (row-level security)
 - Google sign-in via Supabase Auth (Google Cloud Console OAuth credentials)
 - Order-confirmation emails sent through Mailgun
+- **Mobile app** (Expo / React Native) in [`mobile/`](mobile/) sharing the same backend,
+  auth, and cart
 
 ## Stack
 
@@ -30,7 +35,7 @@ npm install
 ### 2. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) and create a project.
-2. Open the **SQL editor** and run the contents of `supabase/schema.sql`. This creates the `products`, `orders`, and `order_items` tables, enables row-level security, and seeds the product catalog.
+2. Open the **SQL editor** and run the contents of `supabase/schema.sql`. This creates the `products`, `orders`, `order_items`, and `cart_items` tables (plus cart RPC helpers and the Realtime publication), enables row-level security, and seeds the product catalog.
 3. In **Project Settings → API**, copy:
    - `Project URL`
    - `anon` public key
@@ -99,8 +104,23 @@ src/
     mailgun.ts              # Mailgun email sender
     types.ts                # DB + domain types
   middleware.ts             # Supabase session refresh
-supabase/schema.sql         # schema + RLS + seed data
+mobile/                     # Expo/React Native app (same backend, shared cart)
+supabase/schema.sql         # schema + RLS + cart helpers + seed data
 ```
+
+### How the shared cart works
+
+- `supabase/schema.sql` creates `cart_items` (`user_id`, `product_id`, `quantity`) with
+  row-level security and four RPC helpers (`add_cart_item`, `set_cart_quantity`,
+  `remove_cart_item`, `clear_cart`), and adds the table to the `supabase_realtime`
+  publication.
+- The web `CartProvider` (`src/components/cart-context.tsx`) and the mobile
+  `CartProvider` (`mobile/src/context/CartContext.tsx`) both:
+  1. use `localStorage` / AsyncStorage while signed out,
+  2. load the server cart and subscribe to `postgres_changes` while signed in,
+  3. merge any guest cart into the server cart on sign-in.
+- Because every mutation goes through the database and Realtime fans the change out,
+  the two apps stay in sync instantly.
 
 ## Security notes
 
