@@ -92,7 +92,7 @@ export default function SignupPage() {
           href="/shop"
           className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
-          Back to shop
+          Continue without an account
         </Link>
       </div>
     );
