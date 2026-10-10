@@ -44,7 +44,7 @@ export default async function ProductPage({
       </Link>
 
       <div className="mt-6 grid gap-8 md:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
+        <div className="relative aspect-square overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
           {product.image_url ? (
             <Image
               src={product.image_url}
@@ -54,7 +54,7 @@ export default async function ProductPage({
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-zinc-300">
+            <div className="flex h-full w-full items-center justify-center text-zinc-300 dark:text-zinc-700">
               <PhoneGlyph className="h-24 w-24" />
             </div>
           )}
@@ -70,10 +70,10 @@ export default async function ProductPage({
           <p className="mt-4 text-2xl font-semibold">
             {formatCents(product.price_cents)}
           </p>
-          <p className="mt-4 leading-relaxed text-zinc-600">
+          <p className="mt-4 leading-relaxed text-zinc-600 dark:text-zinc-400">
             {product.description ?? "No description provided."}
           </p>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </p>
 

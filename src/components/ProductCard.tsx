@@ -25,10 +25,10 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow hover:shadow-md">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
       <Link
         href={`/products/${product.id}`}
-        className="relative block aspect-square overflow-hidden bg-zinc-100"
+        className="relative block aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-800"
       >
         {product.image_url ? (
           <Image
@@ -39,7 +39,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-zinc-300">
+          <div className="flex h-full w-full items-center justify-center text-zinc-300 dark:text-zinc-700">
             <PhoneGlyph className="h-16 w-16" />
           </div>
         )}
@@ -51,7 +51,7 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
         <Link
           href={`/products/${product.id}`}
-          className="mt-1 line-clamp-2 font-medium text-zinc-900 hover:underline"
+          className="mt-1 line-clamp-2 font-medium text-zinc-900 hover:underline dark:text-zinc-100"
         >
           {product.name}
         </Link>

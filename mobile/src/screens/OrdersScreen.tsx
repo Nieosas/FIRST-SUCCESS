@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { supabase } from "../lib/supabase";
 import { formatCents } from "../lib/format";
 import type { Order, OrderItem } from "../lib/types";
@@ -20,6 +21,8 @@ export function OrdersScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Orders">) {
   const { user } = useAuth();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [orders, setOrders] = useState<OrderWithItems[] | null>(null);
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export function OrdersScreen({
   if (orders === null) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator color="#4f46e5" />
+        <ActivityIndicator color={colors.accent} />
       </View>
     );
   }
@@ -135,87 +138,89 @@ export function OrdersScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  sub: {
-    marginTop: 8,
-    textAlign: "center",
-    color: "#71717a",
-  },
-  button: {
-    marginTop: 16,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  list: {
-    padding: 16,
-  },
-  card: {
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#e4e4e7",
-    padding: 16,
-    marginBottom: 16,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f4f4f5",
-  },
-  orderId: {
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  date: {
-    color: "#71717a",
-    fontSize: 13,
-  },
-  cardHeaderRight: {
-    alignItems: "flex-end",
-  },
-  total: {
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  status: {
-    textTransform: "capitalize",
-    color: "#71717a",
-    fontSize: 13,
-  },
-  items: {
-    marginTop: 12,
-  },
-  itemRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 6,
-  },
-  itemName: {
-    flex: 1,
-    color: "#3f3f46",
-  },
-  qty: {
-    color: "#71717a",
-  },
-  itemPrice: {
-    color: "#18181b",
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    center: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: c.text,
+    },
+    sub: {
+      marginTop: 8,
+      textAlign: "center",
+      color: c.textSubtle,
+    },
+    button: {
+      marginTop: 16,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+    },
+    buttonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+    },
+    list: {
+      padding: 16,
+    },
+    card: {
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.borderLight,
+      backgroundColor: c.card,
+      padding: 16,
+      marginBottom: 16,
+    },
+    cardHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingBottom: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: c.borderLight,
+    },
+    orderId: {
+      fontWeight: "700",
+      color: c.text,
+    },
+    date: {
+      color: c.textSubtle,
+      fontSize: 13,
+    },
+    cardHeaderRight: {
+      alignItems: "flex-end",
+    },
+    total: {
+      fontWeight: "700",
+      color: c.text,
+    },
+    status: {
+      textTransform: "capitalize",
+      color: c.textSubtle,
+      fontSize: 13,
+    },
+    items: {
+      marginTop: 12,
+    },
+    itemRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 6,
+    },
+    itemName: {
+      flex: 1,
+      color: c.textMuted,
+    },
+    qty: {
+      color: c.textSubtle,
+    },
+    itemPrice: {
+      color: c.text,
+    },
+  });

@@ -11,7 +11,7 @@ export default async function ProfilePage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Your profile</h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Profiles and Google sign-in require Supabase. Add your keys in{" "}
           <code className="font-mono">.env.local</code> and run{" "}
           <code className="font-mono">supabase/schema.sql</code>.
@@ -58,7 +58,7 @@ export default async function ProfilePage() {
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-semibold tracking-tight">Your profile</h1>
 
-      <div className="mt-6 rounded-2xl border border-zinc-200 p-6">
+      <div className="mt-6 rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
         <div className="flex items-center gap-4">
           {avatarUrl ? (
             <Image
@@ -75,36 +75,36 @@ export default async function ProfilePage() {
           )}
 
           <div className="min-w-0">
-            <p className="truncate text-lg font-semibold text-zinc-900">
+            <p className="truncate text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {name ?? "No name provided"}
             </p>
-            <p className="truncate text-sm text-zinc-500">{user.email}</p>
+            <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">{user.email}</p>
           </div>
         </div>
 
-        <dl className="mt-6 space-y-3 border-t border-zinc-200 pt-5 text-sm">
+        <dl className="mt-6 space-y-3 border-t border-zinc-200 pt-5 text-sm dark:border-zinc-800">
           {name && (
             <div className="flex justify-between">
-              <dt className="text-zinc-500">Name</dt>
-              <dd className="font-medium text-zinc-900">{name}</dd>
+              <dt className="text-zinc-500 dark:text-zinc-400">Name</dt>
+              <dd className="font-medium text-zinc-900 dark:text-zinc-100">{name}</dd>
             </div>
           )}
           <div className="flex justify-between">
-            <dt className="text-zinc-500">Email</dt>
-            <dd className="font-medium text-zinc-900">{user.email}</dd>
+            <dt className="text-zinc-500 dark:text-zinc-400">Email</dt>
+            <dd className="font-medium text-zinc-900 dark:text-zinc-100">{user.email}</dd>
           </div>
           {provider && (
             <div className="flex justify-between">
-              <dt className="text-zinc-500">Sign-in method</dt>
-              <dd className="font-medium capitalize text-zinc-900">
+              <dt className="text-zinc-500 dark:text-zinc-400">Sign-in method</dt>
+              <dd className="font-medium capitalize text-zinc-900 dark:text-zinc-100">
                 {provider}
               </dd>
             </div>
           )}
           {memberSince && (
             <div className="flex justify-between">
-              <dt className="text-zinc-500">Member since</dt>
-              <dd className="font-medium text-zinc-900">{memberSince}</dd>
+              <dt className="text-zinc-500 dark:text-zinc-400">Member since</dt>
+              <dd className="font-medium text-zinc-900 dark:text-zinc-100">{memberSince}</dd>
             </div>
           )}
         </dl>
@@ -118,13 +118,13 @@ export default async function ProfilePage() {
           </Link>
           <Link
             href="/orders"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             My orders
           </Link>
           <Link
             href="/logout"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             Sign out
           </Link>

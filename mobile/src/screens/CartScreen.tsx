@@ -1,6 +1,7 @@
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCart, type CartItem } from "../context/CartContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { formatCents } from "../lib/format";
 import type { RootStackParamList } from "../navigation/types";
 
@@ -8,6 +9,8 @@ export function CartScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Cart">) {
   const { items, removeItem, setQuantity, subtotalCents } = useCart();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   if (items.length === 0) {
     return (
@@ -94,123 +97,125 @@ export function CartScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  list: {
-    padding: 16,
-  },
-  empty: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  emptySub: {
-    marginTop: 6,
-    color: "#71717a",
-  },
-  item: {
-    flexDirection: "row",
-    gap: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f4f4f5",
-  },
-  thumb: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    backgroundColor: "#f4f4f5",
-  },
-  thumbPlaceholder: {
-    backgroundColor: "#f4f4f5",
-  },
-  itemBody: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#18181b",
-  },
-  itemPrice: {
-    marginTop: 2,
-    fontSize: 13,
-    color: "#71717a",
-  },
-  itemRow: {
-    marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  stepper: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#d4d4d8",
-    borderRadius: 999,
-  },
-  stepButton: {
-    width: 30,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stepText: {
-    fontSize: 18,
-    color: "#52525b",
-  },
-  qty: {
-    minWidth: 24,
-    textAlign: "center",
-    fontWeight: "600",
-  },
-  removeText: {
-    color: "#dc2626",
-    fontSize: 13,
-  },
-  lineTotal: {
-    fontWeight: "700",
-    color: "#18181b",
-    alignSelf: "center",
-  },
-  footer: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#e4e4e7",
-  },
-  footerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-  },
-  footerLabel: {
-    color: "#71717a",
-  },
-  footerTotal: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  primaryButton: {
-    marginTop: 12,
-    height: 46,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.background,
+    },
+    list: {
+      padding: 16,
+    },
+    empty: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    },
+    emptyTitle: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: c.text,
+    },
+    emptySub: {
+      marginTop: 6,
+      color: c.textSubtle,
+    },
+    item: {
+      flexDirection: "row",
+      gap: 12,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: c.borderLight,
+    },
+    thumb: {
+      width: 64,
+      height: 64,
+      borderRadius: 8,
+      backgroundColor: c.surface,
+    },
+    thumbPlaceholder: {
+      backgroundColor: c.surface,
+    },
+    itemBody: {
+      flex: 1,
+    },
+    itemName: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: c.text,
+    },
+    itemPrice: {
+      marginTop: 2,
+      fontSize: 13,
+      color: c.textSubtle,
+    },
+    itemRow: {
+      marginTop: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    stepper: {
+      flexDirection: "row",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 999,
+    },
+    stepButton: {
+      width: 30,
+      height: 30,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    stepText: {
+      fontSize: 18,
+      color: c.textMuted,
+    },
+    qty: {
+      minWidth: 24,
+      textAlign: "center",
+      fontWeight: "600",
+      color: c.text,
+    },
+    removeText: {
+      color: c.danger,
+      fontSize: 13,
+    },
+    lineTotal: {
+      fontWeight: "700",
+      color: c.text,
+      alignSelf: "center",
+    },
+    footer: {
+      padding: 16,
+      borderTopWidth: 1,
+      borderTopColor: c.borderLight,
+    },
+    footerRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 12,
+    },
+    footerLabel: {
+      color: c.textSubtle,
+    },
+    footerTotal: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: c.text,
+    },
+    primaryButton: {
+      marginTop: 12,
+      height: 46,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    primaryButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+    },
+  });

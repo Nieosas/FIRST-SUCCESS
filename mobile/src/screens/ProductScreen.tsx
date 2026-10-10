@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCart } from "../context/CartContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { supabase } from "../lib/supabase";
 import { isSupabaseConfigured } from "../lib/env";
 import { demoProducts } from "../lib/demo-products";
@@ -21,6 +22,8 @@ export function ProductScreen({
 }: NativeStackScreenProps<RootStackParamList, "Product">) {
   const { productId } = route.params;
   const { addItem } = useCart();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [qty, setQty] = useState(1);
@@ -119,100 +122,101 @@ export function ProductScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  muted: {
-    color: "#71717a",
-  },
-  container: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-  image: {
-    width: "100%",
-    aspectRatio: 1,
-    borderRadius: 16,
-    backgroundColor: "#f4f4f5",
-  },
-  imagePlaceholder: {
-    backgroundColor: "#f4f4f5",
-  },
-  category: {
-    marginTop: 16,
-    fontSize: 13,
-    fontWeight: "600",
-    textTransform: "uppercase",
-    color: "#4f46e5",
-  },
-  title: {
-    marginTop: 6,
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  price: {
-    marginTop: 10,
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  description: {
-    marginTop: 12,
-    fontSize: 15,
-    lineHeight: 22,
-    color: "#52525b",
-  },
-  stock: {
-    marginTop: 8,
-    fontSize: 13,
-    color: "#71717a",
-  },
-  actions: {
-    marginTop: 24,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  stepper: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#d4d4d8",
-    borderRadius: 999,
-  },
-  stepButton: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stepText: {
-    fontSize: 20,
-    color: "#52525b",
-  },
-  qty: {
-    minWidth: 32,
-    textAlign: "center",
-    fontWeight: "600",
-    color: "#18181b",
-  },
-  addButton: {
-    flex: 1,
-    height: 44,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    center: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    muted: {
+      color: c.textSubtle,
+    },
+    container: {
+      padding: 16,
+      paddingBottom: 40,
+    },
+    image: {
+      width: "100%",
+      aspectRatio: 1,
+      borderRadius: 16,
+      backgroundColor: c.surface,
+    },
+    imagePlaceholder: {
+      backgroundColor: c.surface,
+    },
+    category: {
+      marginTop: 16,
+      fontSize: 13,
+      fontWeight: "600",
+      textTransform: "uppercase",
+      color: c.accent,
+    },
+    title: {
+      marginTop: 6,
+      fontSize: 26,
+      fontWeight: "700",
+      color: c.text,
+    },
+    price: {
+      marginTop: 10,
+      fontSize: 22,
+      fontWeight: "700",
+      color: c.text,
+    },
+    description: {
+      marginTop: 12,
+      fontSize: 15,
+      lineHeight: 22,
+      color: c.textMuted,
+    },
+    stock: {
+      marginTop: 8,
+      fontSize: 13,
+      color: c.textSubtle,
+    },
+    actions: {
+      marginTop: 24,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    stepper: {
+      flexDirection: "row",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 999,
+    },
+    stepButton: {
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    stepText: {
+      fontSize: 20,
+      color: c.textMuted,
+    },
+    qty: {
+      minWidth: 32,
+      textAlign: "center",
+      fontWeight: "600",
+      color: c.text,
+    },
+    addButton: {
+      flex: 1,
+      height: 44,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    addButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+  });

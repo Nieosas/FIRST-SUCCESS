@@ -10,6 +10,7 @@ import {
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { SITE_URL } from "../lib/env";
 import { supabase } from "../lib/supabase";
 import { formatCents } from "../lib/format";
@@ -34,6 +35,8 @@ export function CheckoutScreen({
 }: NativeStackScreenProps<RootStackParamList, "Checkout">) {
   const { items, subtotalCents, clear } = useCart();
   const { user } = useAuth();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const [form, setForm] = useState<FormState>({
     email: "",
@@ -136,6 +139,7 @@ export function CheckoutScreen({
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor={colors.placeholder}
         keyboardType="email-address"
         autoCapitalize="none"
         value={form.email}
@@ -146,42 +150,49 @@ export function CheckoutScreen({
       <TextInput
         style={styles.input}
         placeholder="Full name"
+        placeholderTextColor={colors.placeholder}
         value={form.customerName}
         onChangeText={(t) => update("customerName", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="Address line 1"
+        placeholderTextColor={colors.placeholder}
         value={form.addressLine1}
         onChangeText={(t) => update("addressLine1", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="Address line 2 (optional)"
+        placeholderTextColor={colors.placeholder}
         value={form.addressLine2}
         onChangeText={(t) => update("addressLine2", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="City"
+        placeholderTextColor={colors.placeholder}
         value={form.city}
         onChangeText={(t) => update("city", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="State"
+        placeholderTextColor={colors.placeholder}
         value={form.state}
         onChangeText={(t) => update("state", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="ZIP / Postal code"
+        placeholderTextColor={colors.placeholder}
         value={form.postalCode}
         onChangeText={(t) => update("postalCode", t)}
       />
       <TextInput
         style={styles.input}
         placeholder="Country"
+        placeholderTextColor={colors.placeholder}
         value={form.country}
         onChangeText={(t) => update("country", t)}
       />
@@ -221,101 +232,103 @@ export function CheckoutScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  sectionTitle: {
-    marginTop: 16,
-    marginBottom: 8,
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d4d4d8",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    marginBottom: 8,
-    backgroundColor: "#fff",
-  },
-  error: {
-    color: "#b91c1c",
-    marginTop: 8,
-  },
-  summary: {
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#e4e4e7",
-    paddingTop: 12,
-  },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  summaryLabel: {
-    color: "#71717a",
-  },
-  summaryValue: {
-    color: "#18181b",
-  },
-  summaryTotal: {
-    borderTopWidth: 1,
-    borderTopColor: "#e4e4e7",
-    paddingTop: 8,
-  },
-  summaryTotalLabel: {
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  summaryTotalValue: {
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  primaryButton: {
-    marginTop: 8,
-    height: 46,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  disabled: {
-    opacity: 0.6,
-  },
-  disclaimer: {
-    marginTop: 12,
-    textAlign: "center",
-    color: "#a1a1aa",
-    fontSize: 12,
-  },
-  successTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  sub: {
-    marginTop: 8,
-    textAlign: "center",
-    color: "#71717a",
-  },
-  orderId: {
-    fontWeight: "700",
-    color: "#18181b",
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      padding: 16,
+      paddingBottom: 40,
+    },
+    center: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    },
+    sectionTitle: {
+      marginTop: 16,
+      marginBottom: 8,
+      fontSize: 15,
+      fontWeight: "700",
+      color: c.text,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      fontSize: 15,
+      marginBottom: 8,
+      backgroundColor: c.card,
+      color: c.text,
+    },
+    error: {
+      color: c.danger,
+      marginTop: 8,
+    },
+    summary: {
+      marginTop: 16,
+      borderTopWidth: 1,
+      borderTopColor: c.borderLight,
+      paddingTop: 12,
+    },
+    summaryRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 8,
+    },
+    summaryLabel: {
+      color: c.textSubtle,
+    },
+    summaryValue: {
+      color: c.text,
+    },
+    summaryTotal: {
+      borderTopWidth: 1,
+      borderTopColor: c.borderLight,
+      paddingTop: 8,
+    },
+    summaryTotalLabel: {
+      fontWeight: "700",
+      color: c.text,
+    },
+    summaryTotalValue: {
+      fontWeight: "700",
+      color: c.text,
+    },
+    primaryButton: {
+      marginTop: 8,
+      height: 46,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    primaryButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+    },
+    disabled: {
+      opacity: 0.6,
+    },
+    disclaimer: {
+      marginTop: 12,
+      textAlign: "center",
+      color: c.textFaint,
+      fontSize: 12,
+    },
+    successTitle: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: c.text,
+    },
+    sub: {
+      marginTop: 8,
+      textAlign: "center",
+      color: c.textSubtle,
+    },
+    orderId: {
+      fontWeight: "700",
+      color: c.text,
+    },
+  });

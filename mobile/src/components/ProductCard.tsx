@@ -2,6 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCart } from "../context/CartContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { formatCents } from "../lib/format";
 import type { Product } from "../lib/types";
 import type { RootStackParamList } from "../navigation/types";
@@ -10,6 +11,8 @@ export function ProductCard({ product }: { product: Product }) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { addItem } = useCart();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   function handleAdd() {
     addItem({
@@ -49,56 +52,57 @@ export function ProductCard({ product }: { product: Product }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    width: "48%",
-    marginBottom: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#e4e4e7",
-    backgroundColor: "#fff",
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    aspectRatio: 1,
-    backgroundColor: "#f4f4f5",
-  },
-  imagePlaceholder: {
-    backgroundColor: "#f4f4f5",
-  },
-  body: {
-    padding: 12,
-  },
-  category: {
-    fontSize: 11,
-    fontWeight: "600",
-    textTransform: "uppercase",
-    color: "#4f46e5",
-  },
-  name: {
-    marginTop: 4,
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#18181b",
-  },
-  price: {
-    marginTop: 6,
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  addButton: {
-    marginHorizontal: 12,
-    marginBottom: 12,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    paddingVertical: 8,
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 13,
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    card: {
+      width: "48%",
+      marginBottom: 16,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.borderLight,
+      backgroundColor: c.card,
+      overflow: "hidden",
+    },
+    image: {
+      width: "100%",
+      aspectRatio: 1,
+      backgroundColor: c.surface,
+    },
+    imagePlaceholder: {
+      backgroundColor: c.surface,
+    },
+    body: {
+      padding: 12,
+    },
+    category: {
+      fontSize: 11,
+      fontWeight: "600",
+      textTransform: "uppercase",
+      color: c.accent,
+    },
+    name: {
+      marginTop: 4,
+      fontSize: 14,
+      fontWeight: "500",
+      color: c.text,
+    },
+    price: {
+      marginTop: 6,
+      fontSize: 15,
+      fontWeight: "700",
+      color: c.text,
+    },
+    addButton: {
+      marginHorizontal: 12,
+      marginBottom: 12,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      paddingVertical: 8,
+      alignItems: "center",
+    },
+    addButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+      fontSize: 13,
+    },
+  });

@@ -11,7 +11,7 @@ export default async function EditProfilePage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Edit profile</h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Profiles and sign-in require Supabase. Add your keys in{" "}
           <code className="font-mono">.env.local</code> and run{" "}
           <code className="font-mono">supabase/schema.sql</code>.

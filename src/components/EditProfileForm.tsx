@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const inputClass =
-  "w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+  "w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500";
 
 export function EditProfileForm({
   email,
@@ -60,19 +60,19 @@ export function EditProfileForm({
 
       <form
         onSubmit={onSubmit}
-        className="mt-6 rounded-2xl border border-zinc-200 p-6"
+        className="mt-6 rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800"
       >
-        <label className="block text-sm font-medium text-zinc-700">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Email
           <input
             type="email"
             value={email}
             disabled
-            className={`${inputClass} mt-1 bg-zinc-100 text-zinc-500`}
+            className={`${inputClass} mt-1 bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400`}
           />
         </label>
 
-        <label className="mt-4 block text-sm font-medium text-zinc-700">
+        <label className="mt-4 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Full name
           <input
             type="text"
@@ -83,7 +83,7 @@ export function EditProfileForm({
           />
         </label>
 
-        <label className="mt-4 block text-sm font-medium text-zinc-700">
+        <label className="mt-4 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Avatar URL
           <input
             type="url"
@@ -95,12 +95,12 @@ export function EditProfileForm({
         </label>
 
         {error && (
-          <p className="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
+          <p className="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700 dark:bg-red-950/50 dark:text-red-300">
             {error}
           </p>
         )}
         {saved && (
-          <p className="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+          <p className="mt-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700 dark:bg-green-950/50 dark:text-green-300">
             Profile updated.
           </p>
         )}

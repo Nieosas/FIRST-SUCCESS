@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import type { RootStackParamList } from "../navigation/types";
 
 export function AuthScreen({
@@ -19,6 +20,8 @@ export function AuthScreen({
 }: NativeStackScreenProps<RootStackParamList, "Auth">) {
   const { configured, signInWithGoogle, signInWithEmail, signUpWithEmail } =
     useAuth();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -91,6 +94,7 @@ export function AuthScreen({
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor={colors.placeholder}
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
@@ -100,6 +104,7 @@ export function AuthScreen({
         <TextInput
           style={styles.input}
           placeholder={mode === "signup" ? "Password (min. 6 characters)" : "Password"}
+          placeholderTextColor={colors.placeholder}
           secureTextEntry
           value={password}
           onChangeText={setPassword}
@@ -114,7 +119,7 @@ export function AuthScreen({
           style={[styles.primaryButton, busy && styles.disabled]}
         >
           {busy ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.onAccent} />
           ) : (
             <Text style={styles.primaryButtonText}>
               {mode === "signin" ? "Sign in" : "Create account"}
@@ -154,93 +159,95 @@ export function AuthScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  container: {
-    padding: 24,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "700",
-    color: "#18181b",
-  },
-  sub: {
-    marginTop: 6,
-    fontSize: 14,
-    color: "#71717a",
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d4d4d8",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 15,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
-  error: {
-    color: "#b91c1c",
-    marginBottom: 10,
-  },
-  notice: {
-    color: "#15803d",
-    marginBottom: 10,
-  },
-  primaryButton: {
-    marginTop: 6,
-    height: 48,
-    borderRadius: 999,
-    backgroundColor: "#4f46e5",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  linkButton: {
-    marginTop: 14,
-    alignItems: "center",
-  },
-  linkButtonText: {
-    color: "#4f46e5",
-    fontWeight: "600",
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 24,
-    marginBottom: 16,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#e4e4e7",
-  },
-  dividerText: {
-    marginHorizontal: 12,
-    color: "#a1a1aa",
-  },
-  secondaryButton: {
-    height: 48,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "#d4d4d8",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  secondaryButtonText: {
-    color: "#3f3f46",
-    fontWeight: "600",
-  },
-  disabled: {
-    opacity: 0.6,
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    flex: {
+      flex: 1,
+      backgroundColor: c.background,
+    },
+    container: {
+      padding: 24,
+      paddingTop: 40,
+    },
+    title: {
+      fontSize: 26,
+      fontWeight: "700",
+      color: c.text,
+    },
+    sub: {
+      marginTop: 6,
+      fontSize: 14,
+      color: c.textSubtle,
+      marginBottom: 20,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      fontSize: 15,
+      marginBottom: 10,
+      backgroundColor: c.card,
+      color: c.text,
+    },
+    error: {
+      color: c.danger,
+      marginBottom: 10,
+    },
+    notice: {
+      color: c.success,
+      marginBottom: 10,
+    },
+    primaryButton: {
+      marginTop: 6,
+      height: 48,
+      borderRadius: 999,
+      backgroundColor: c.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    primaryButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+      fontSize: 16,
+    },
+    linkButton: {
+      marginTop: 14,
+      alignItems: "center",
+    },
+    linkButtonText: {
+      color: c.accent,
+      fontWeight: "600",
+    },
+    divider: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 24,
+      marginBottom: 16,
+    },
+    dividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: c.borderLight,
+    },
+    dividerText: {
+      marginHorizontal: 12,
+      color: c.textFaint,
+    },
+    secondaryButton: {
+      height: 48,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    secondaryButtonText: {
+      color: c.textMuted,
+      fontWeight: "600",
+    },
+    disabled: {
+      opacity: 0.6,
+    },
+  });

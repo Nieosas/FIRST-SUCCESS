@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -16,6 +17,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProductCard } from "../components/ProductCard";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useTheme, type ThemeColors } from "../context/ThemeContext";
 import { supabase } from "../lib/supabase";
 import { isSupabaseConfigured } from "../lib/env";
 import { demoProducts } from "../lib/demo-products";
@@ -27,6 +29,8 @@ export function HomeScreen({
 }: NativeStackScreenProps<RootStackParamList, "Home">) {
   const { user, loading: authLoading, configured, signOut } = useAuth();
   const { totalCount } = useCart();
+  const { colors, dark, toggleTheme } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,21 +55,32 @@ export function HomeScreen({
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable
-          onPress={() => navigation.navigate("Cart")}
-          style={styles.cartButton}
-          hitSlop={8}
-        >
-          <Text style={styles.cartButtonText}>Cart</Text>
-          {totalCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{totalCount}</Text>
-            </View>
-          )}
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable
+            onPress={toggleTheme}
+            style={styles.themeButton}
+            hitSlop={8}
+          >
+            <Text style={styles.themeButtonText}>
+              {dark ? "Light" : "Dark"}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate("Cart")}
+            style={styles.cartButton}
+            hitSlop={8}
+          >
+            <Text style={styles.cartButtonText}>Cart</Text>
+            {totalCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{totalCount}</Text>
+              </View>
+            )}
+          </Pressable>
+        </View>
       ),
     });
-  }, [navigation, totalCount]);
+  }, [navigation, totalCount, styles, dark, toggleTheme]);
 
   return (
     <FlatList
@@ -83,7 +98,7 @@ export function HomeScreen({
               Demo mode — set EXPO_PUBLIC_SUPABASE_URL to enable sync.
             </Text>
           ) : authLoading ? (
-            <ActivityIndicator color="#4f46e5" />
+            <ActivityIndicator color={colors.accent} />
           ) : user ? (
             <View style={styles.signedInRow}>
               <View style={styles.signedInTextWrap}>
@@ -121,91 +136,105 @@ export function HomeScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    padding: 12,
-  },
-  row: {
-    justifyContent: "space-between",
-  },
-  account: {
-    marginBottom: 12,
-    padding: 14,
-    borderRadius: 16,
-    backgroundColor: "#eef2ff",
-    alignItems: "center",
-  },
-  accountText: {
-    fontSize: 13,
-    color: "#3730a3",
-    textAlign: "center",
-  },
-  signedInRow: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  signedInTextWrap: {
-    flex: 1,
-  },
-  primaryButton: {
-    backgroundColor: "#4f46e5",
-    borderRadius: 999,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-  },
-  primaryButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: "#c7d2fe",
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-  },
-  secondaryButtonText: {
-    color: "#3730a3",
-    fontWeight: "600",
-  },
-  linkButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-  },
-  linkButtonText: {
-    color: "#dc2626",
-    fontWeight: "600",
-  },
-  cartButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 4,
-  },
-  cartButtonText: {
-    fontSize: 16,
-    color: "#4f46e5",
-    fontWeight: "600",
-  },
-  badge: {
-    marginLeft: 6,
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#4f46e5",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 5,
-  },
-  badgeText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  empty: {
-    textAlign: "center",
-    color: "#71717a",
-    marginTop: 24,
-  },
-});
+const createStyles = (c: ThemeColors) =>
+  StyleSheet.create({
+    list: {
+      padding: 12,
+    },
+    row: {
+      justifyContent: "space-between",
+    },
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    themeButton: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    themeButtonText: {
+      fontSize: 15,
+      color: c.accent,
+      fontWeight: "600",
+    },
+    account: {
+      marginBottom: 12,
+      padding: 14,
+      borderRadius: 16,
+      backgroundColor: c.accentSoft,
+      alignItems: "center",
+    },
+    accountText: {
+      fontSize: 13,
+      color: c.accentText,
+      textAlign: "center",
+    },
+    signedInRow: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    signedInTextWrap: {
+      flex: 1,
+    },
+    primaryButton: {
+      backgroundColor: c.accent,
+      borderRadius: 999,
+      paddingVertical: 10,
+      paddingHorizontal: 18,
+    },
+    primaryButtonText: {
+      color: c.onAccent,
+      fontWeight: "600",
+    },
+    secondaryButton: {
+      borderWidth: 1,
+      borderColor: c.accentBorder,
+      borderRadius: 999,
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+    },
+    secondaryButtonText: {
+      color: c.accentText,
+      fontWeight: "600",
+    },
+    linkButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 4,
+    },
+    linkButtonText: {
+      color: c.danger,
+      fontWeight: "600",
+    },
+    cartButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 4,
+    },
+    cartButtonText: {
+      fontSize: 16,
+      color: c.accent,
+      fontWeight: "600",
+    },
+    badge: {
+      marginLeft: 6,
+      minWidth: 20,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: c.accent,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 5,
+    },
+    badgeText: {
+      color: c.onAccent,
+      fontSize: 12,
+      fontWeight: "700",
+    },
+    empty: {
+      textAlign: "center",
+      color: c.textSubtle,
+      marginTop: 24,
+    },
+  });

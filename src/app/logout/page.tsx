@@ -25,7 +25,7 @@ export default function LogoutPage() {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Sign out</h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Sign-in is handled by Supabase. Add your keys in{" "}
           <code className="font-mono">.env.local</code> to enable it.
         </p>
@@ -42,8 +42,8 @@ export default function LogoutPage() {
   if (!done) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
-        <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-zinc-300 border-t-indigo-600" />
-        <p className="mt-4 text-zinc-600">Signing you out…</p>
+        <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-zinc-300 border-t-indigo-600 dark:border-zinc-700" />
+        <p className="mt-4 text-zinc-600 dark:text-zinc-400">Signing you out…</p>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default function LogoutPage() {
       <h1 className="text-2xl font-semibold tracking-tight">
         You have been signed out
       </h1>
-      <p className="mt-2 text-zinc-600">Thanks for visiting PhoneDeck.</p>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">Thanks for visiting PhoneDeck.</p>
       <div className="mt-6 flex justify-center gap-3">
         <Link
           href="/login"
@@ -63,7 +63,7 @@ export default function LogoutPage() {
         </Link>
         <Link
           href="/shop"
-          className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50"
+          className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
         >
           Back to shop
         </Link>

@@ -26,10 +26,10 @@ export function ProductPurchase({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <div className="inline-flex items-center rounded-full border border-zinc-300">
+      <div className="inline-flex items-center rounded-full border border-zinc-300 dark:border-zinc-700">
         <button
           onClick={() => setQty((q) => Math.max(1, q - 1))}
-          className="h-11 w-11 text-lg text-zinc-600 hover:text-zinc-900"
+          className="h-11 w-11 text-lg text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           aria-label="Decrease quantity"
         >
           -
@@ -37,7 +37,7 @@ export function ProductPurchase({ product }: { product: Product }) {
         <span className="w-10 text-center font-medium">{qty}</span>
         <button
           onClick={() => setQty((q) => Math.min(99, q + 1))}
-          className="h-11 w-11 text-lg text-zinc-600 hover:text-zinc-900"
+          className="h-11 w-11 text-lg text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           aria-label="Increase quantity"
         >
           +

@@ -24,7 +24,7 @@ export default async function WelcomePage() {
       <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
         Gear up your phone.
       </h1>
-      <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-600">
+      <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
         Create a free account to sync your cart across devices, track your
         orders and keep your profile in one place.
       </p>
@@ -38,13 +38,13 @@ export default async function WelcomePage() {
         </Link>
         <Link
           href="/login"
-          className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-300 px-8 font-medium text-zinc-800 hover:bg-zinc-50"
+          className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-300 px-8 font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
         >
           Sign in
         </Link>
       </div>
 
-      <p className="mt-10 text-sm text-zinc-500">
+      <p className="mt-10 text-sm text-zinc-500 dark:text-zinc-400">
         <Link href="/shop" className="font-medium text-indigo-600 hover:underline">
           Browse the shop without an account
         </Link>

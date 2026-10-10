@@ -11,7 +11,7 @@ export default async function OrdersPage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Your orders</h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Order history and Google sign-in require Supabase. Add your keys in{" "}
           <code className="font-mono">.env.local</code> and run{" "}
           <code className="font-mono">supabase/schema.sql</code>.
@@ -35,7 +35,7 @@ export default async function OrdersPage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Your orders</h1>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Sign in with Google to view your order history.
         </p>
         <Link
@@ -78,20 +78,20 @@ export default async function OrdersPage() {
       <h1 className="text-2xl font-semibold tracking-tight">Your orders</h1>
 
       {orderList.length === 0 ? (
-        <p className="mt-4 text-zinc-500">You have not placed any orders yet.</p>
+        <p className="mt-4 text-zinc-500 dark:text-zinc-400">You have not placed any orders yet.</p>
       ) : (
         <div className="mt-6 space-y-6">
           {orderList.map((order) => (
             <div
               key={order.id}
-              className="rounded-2xl border border-zinc-200 p-5"
+              className="rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800"
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 pb-3 dark:border-zinc-800">
                 <div>
-                  <p className="font-mono text-sm font-medium text-zinc-800">
+                  <p className="font-mono text-sm font-medium text-zinc-800 dark:text-zinc-200">
                     #{order.id.slice(0, 8).toUpperCase()}
                   </p>
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
                     {new Date(order.created_at).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
@@ -101,7 +101,7 @@ export default async function OrdersPage() {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">{formatCents(order.total_cents)}</p>
-                  <p className="text-sm capitalize text-zinc-500">
+                  <p className="text-sm capitalize text-zinc-500 dark:text-zinc-400">
                     {order.status}
                   </p>
                 </div>
@@ -112,7 +112,7 @@ export default async function OrdersPage() {
                   <li key={item.id} className="flex justify-between">
                     <span>
                       {item.product_name}{" "}
-                      <span className="text-zinc-500">x{item.quantity}</span>
+                      <span className="text-zinc-500 dark:text-zinc-400">x{item.quantity}</span>
                     </span>
                     <span>{formatCents(item.unit_price_cents * item.quantity)}</span>
                   </li>

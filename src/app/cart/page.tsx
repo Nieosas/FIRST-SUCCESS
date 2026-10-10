@@ -13,7 +13,7 @@ export default function CartPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl font-semibold">Your cart is empty</h1>
-        <p className="mt-2 text-zinc-500">
+        <p className="mt-2 text-zinc-500 dark:text-zinc-400">
           Add a few accessories to get started.
         </p>
         <Link
@@ -34,9 +34,9 @@ export default function CartPage() {
         {items.map((item) => (
           <div
             key={item.productId}
-            className="flex items-center gap-4 rounded-2xl border border-zinc-200 p-4"
+            className="flex items-center gap-4 rounded-2xl border border-zinc-200 p-4 dark:border-zinc-800"
           >
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
               {item.imageUrl ? (
                 <Image
                   src={item.imageUrl}
@@ -46,7 +46,7 @@ export default function CartPage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-zinc-300">
+                <div className="flex h-full w-full items-center justify-center text-zinc-300 dark:text-zinc-700">
                   <PhoneGlyph className="h-6 w-6" />
                 </div>
               )}
@@ -59,15 +59,15 @@ export default function CartPage() {
               >
                 {item.name}
               </Link>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 {formatCents(item.priceCents)} each
               </p>
             </div>
 
-            <div className="flex items-center rounded-full border border-zinc-300">
+            <div className="flex items-center rounded-full border border-zinc-300 dark:border-zinc-700">
               <button
                 onClick={() => setQuantity(item.productId, item.quantity - 1)}
-                className="h-8 w-8 text-zinc-600 hover:text-zinc-900"
+                className="h-8 w-8 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 aria-label="Decrease quantity"
               >
                 -
@@ -77,7 +77,7 @@ export default function CartPage() {
               </span>
               <button
                 onClick={() => setQuantity(item.productId, item.quantity + 1)}
-                className="h-8 w-8 text-zinc-600 hover:text-zinc-900"
+                className="h-8 w-8 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 aria-label="Increase quantity"
               >
                 +
@@ -90,7 +90,7 @@ export default function CartPage() {
 
             <button
               onClick={() => removeItem(item.productId)}
-              className="text-sm text-zinc-400 hover:text-red-600"
+              className="text-sm text-zinc-400 hover:text-red-600 dark:text-zinc-500"
               aria-label="Remove item"
             >
               Remove
@@ -101,7 +101,7 @@ export default function CartPage() {
 
       <div className="mt-8 flex flex-col items-end gap-4">
         <div className="text-right">
-          <p className="text-sm text-zinc-500">Subtotal</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Subtotal</p>
           <p className="text-2xl font-semibold">{formatCents(subtotalCents)}</p>
         </div>
         <Link
