@@ -91,7 +91,7 @@ export default function CheckoutPage() {
         <h1 className="text-2xl font-semibold">Nothing to check out</h1>
         <p className="mt-2 text-zinc-500">Your cart is empty.</p>
         <Link
-          href="/"
+          href="/shop"
           className="mt-6 inline-flex h-11 items-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
           Browse products

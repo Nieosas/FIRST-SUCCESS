@@ -48,7 +48,7 @@ export default async function CheckoutSuccessPage({
 
       <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
         <Link
-          href="/"
+          href="/shop"
           className="inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
           Continue shopping

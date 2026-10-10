@@ -37,7 +37,7 @@ export default async function ProductPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <Link
-        href="/"
+        href="/shop"
         className="text-sm font-medium text-indigo-600 hover:underline"
       >
         &larr; Back to shop

@@ -17,7 +17,7 @@ export default async function ProfilePage() {
           <code className="font-mono">supabase/schema.sql</code>.
         </p>
         <Link
-          href="/"
+          href="/shop"
           className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
           Back to shop
@@ -111,8 +111,14 @@ export default async function ProfilePage() {
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/orders"
+            href="/profile/edit"
             className="inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
+          >
+            Edit profile
+          </Link>
+          <Link
+            href="/orders"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 font-medium text-zinc-800 hover:bg-zinc-50"
           >
             My orders
           </Link>

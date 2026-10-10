@@ -11,7 +11,7 @@ import { isSupabaseConfigured } from "@/lib/config";
 const inputClass =
   "w-full rounded-lg border border-zinc-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
   const configured = isSupabaseConfigured();
   const [user, setUser] = useState<User | null>(null);
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   useEffect(() => {
     if (!configured) {
@@ -33,7 +34,7 @@ export default function LoginPage() {
       .finally(() => setChecking(false));
   }, [configured]);
 
-  async function signInWithGoogle() {
+  async function signUpWithGoogle() {
     setBusy(true);
     try {
       const supabase = createClient();
@@ -49,22 +50,30 @@ export default function LoginPage() {
     }
   }
 
-  async function signInWithEmail(e: FormEvent) {
+  async function signUpWithEmail(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setNeedsConfirmation(false);
     setBusy(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/shop`,
+        },
       });
       if (error) {
         setError(error.message);
         return;
       }
-      router.push("/shop");
-      router.refresh();
+      if (data.session) {
+        router.push("/shop");
+        router.refresh();
+      } else {
+        setNeedsConfirmation(true);
+      }
     } finally {
       setBusy(false);
     }
@@ -73,9 +82,9 @@ export default function LoginPage() {
   if (!configured) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold">Sign in</h1>
+        <h1 className="text-2xl font-semibold">Create an account</h1>
         <p className="mt-2 text-zinc-600">
-          Google sign-in requires Supabase. Add your keys in{" "}
+          Sign-up requires Supabase. Add your keys in{" "}
           <code className="font-mono">.env.local</code> and run{" "}
           <code className="font-mono">supabase/schema.sql</code>.
         </p>
@@ -120,16 +129,36 @@ export default function LoginPage() {
     );
   }
 
+  if (needsConfirmation) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-24 text-center sm:px-6">
+        <h1 className="text-2xl font-semibold">Check your email</h1>
+        <p className="mt-2 text-zinc-600">
+          We sent a confirmation link to{" "}
+          <span className="font-medium text-zinc-900">{email}</span>. Click it to
+          activate your account.
+        </p>
+        <Link
+          href="/login"
+          className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
+        >
+          Go to sign in
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-md px-4 py-24 sm:px-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
       <p className="mt-2 text-zinc-600">
-        Sign in to sync your cart, track orders and manage your profile.
+        Sign up to sync your cart across devices, track orders and manage your
+        profile.
       </p>
 
       <div className="mt-8 rounded-2xl border border-zinc-200 p-6">
         <button
-          onClick={signInWithGoogle}
+          onClick={signUpWithGoogle}
           disabled={busy}
           className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-zinc-300 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60"
         >
@@ -139,11 +168,11 @@ export default function LoginPage() {
 
         <div className="my-4 flex items-center gap-3 text-xs text-zinc-400">
           <span className="h-px flex-1 bg-zinc-200" />
-          or sign in with email
+          or sign up with email
           <span className="h-px flex-1 bg-zinc-200" />
         </div>
 
-        <form onSubmit={signInWithEmail} className="space-y-3">
+        <form onSubmit={signUpWithEmail} className="space-y-3">
           <input
             required
             type="email"
@@ -155,7 +184,8 @@ export default function LoginPage() {
           <input
             required
             type="password"
-            placeholder="Password"
+            minLength={6}
+            placeholder="Password (min. 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={inputClass}
@@ -170,15 +200,15 @@ export default function LoginPage() {
             disabled={busy}
             className="h-12 w-full rounded-full bg-indigo-600 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
-            {busy ? "Signing in…" : "Sign in"}
+            {busy ? "Creating account…" : "Create account"}
           </button>
         </form>
       </div>
 
       <p className="mt-6 text-center text-sm text-zinc-500">
-        New here?{" "}
-        <Link href="/welcome" className="font-medium text-indigo-600 hover:underline">
-          Create an account
+        Already have an account?{" "}
+        <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+          Sign in
         </Link>
       </p>
     </div>

@@ -17,7 +17,7 @@ export default async function OrdersPage() {
           <code className="font-mono">supabase/schema.sql</code>.
         </p>
         <Link
-          href="/"
+          href="/shop"
           className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
           Back to shop
@@ -39,7 +39,7 @@ export default async function OrdersPage() {
           Sign in with Google to view your order history.
         </p>
         <Link
-          href="/"
+          href="/shop"
           className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-indigo-600 px-6 font-medium text-white hover:bg-indigo-700"
         >
           Back to shop
