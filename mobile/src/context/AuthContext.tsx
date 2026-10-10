@@ -24,6 +24,11 @@ interface AuthContextValue {
   loading: boolean;
   configured: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    email: string,
+    password: string
+  ) => Promise<{ needsConfirmation: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -81,12 +86,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    return { needsConfirmation: !data.session };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, configured, signInWithGoogle, signOut }),
+    () => ({
+      user,
+      loading,
+      configured,
+      signInWithGoogle,
+      signInWithEmail,
+      signUpWithEmail,
+      signOut,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, loading, configured]
   );
 

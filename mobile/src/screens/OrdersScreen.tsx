@@ -19,7 +19,7 @@ type OrderWithItems = Order & { items: OrderItem[] };
 export function OrdersScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Orders">) {
-  const { user, signInWithGoogle } = useAuth();
+  const { user } = useAuth();
   const [orders, setOrders] = useState<OrderWithItems[] | null>(null);
 
   useEffect(() => {
@@ -60,12 +60,12 @@ export function OrdersScreen({
     return (
       <View style={styles.center}>
         <Text style={styles.title}>Your orders</Text>
-        <Text style={styles.sub}>Sign in with Google to view your order history.</Text>
+        <Text style={styles.sub}>Sign in to view your order history.</Text>
         <Pressable
-          onPress={() => void signInWithGoogle().catch(() => {})}
+          onPress={() => navigation.navigate("Auth")}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Sign in with Google</Text>
+          <Text style={styles.buttonText}>Sign in</Text>
         </Pressable>
       </View>
     );

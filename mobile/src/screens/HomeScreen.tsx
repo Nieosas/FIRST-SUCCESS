@@ -25,8 +25,7 @@ import type { RootStackParamList } from "../navigation/types";
 export function HomeScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "Home">) {
-  const { user, loading: authLoading, configured, signInWithGoogle, signOut } =
-    useAuth();
+  const { user, loading: authLoading, configured, signOut } = useAuth();
   const { totalCount } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -104,10 +103,10 @@ export function HomeScreen({
             </View>
           ) : (
             <Pressable
-              onPress={() => void signInWithGoogle().catch(() => {})}
+              onPress={() => navigation.navigate("Auth")}
               style={styles.primaryButton}
             >
-              <Text style={styles.primaryButtonText}>Sign in with Google</Text>
+              <Text style={styles.primaryButtonText}>Sign in / Create account</Text>
             </Pressable>
           )}
         </View>

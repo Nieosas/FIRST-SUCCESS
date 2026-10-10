@@ -9,6 +9,7 @@ import { ProductScreen } from "./src/screens/ProductScreen";
 import { CartScreen } from "./src/screens/CartScreen";
 import { OrdersScreen } from "./src/screens/OrdersScreen";
 import { CheckoutScreen } from "./src/screens/CheckoutScreen";
+import { AuthScreen } from "./src/screens/AuthScreen";
 import type { RootStackParamList } from "./src/navigation/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -50,6 +51,11 @@ export default function App() {
                 name="Orders"
                 component={OrdersScreen}
                 options={{ title: "Orders" }}
+              />
+              <Stack.Screen
+                name="Auth"
+                component={AuthScreen}
+                options={{ title: "Account" }}
               />
             </Stack.Navigator>
           </NavigationContainer>
