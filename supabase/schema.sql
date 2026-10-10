@@ -200,7 +200,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Crystal-clear shock-absorbent case with raised edges to protect the screen and camera.',
     'Cases',
     1599,
-    'https://picsum.photos/seed/clear-phone-case/600/600',
+    'https://images.unsplash.com/photo-1771142061210-95e97225641e?w=1080&q=80',
     120
   ),
   (
@@ -209,7 +209,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     '9H-hardness tempered glass with oleophobic coating for a smooth, fingerprint-free finish.',
     'Screen Protectors',
     999,
-    'https://picsum.photos/seed/tempered-glass-screen-protector/600/600',
+    'https://images.unsplash.com/photo-1750041888982-67a58e6c9014?w=1080&q=80',
     200
   ),
   (
@@ -218,7 +218,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Compact 30W USB-C wall charger with GaN technology for fast, efficient charging.',
     'Chargers',
     2499,
-    'https://picsum.photos/seed/usb-c-fast-charger-30w/600/600',
+    'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=1080&q=80',
     90
   ),
   (
@@ -227,7 +227,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Durable braided 2-meter USB-C cable rated for 100W power delivery and fast data transfer.',
     'Cables',
     1299,
-    'https://picsum.photos/seed/braided-usb-c-cable-2m/600/600',
+    'https://images.unsplash.com/photo-1572721546624-05bf65ad7679?w=1080&q=80',
     150
   ),
   (
@@ -236,7 +236,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Magnetic 15W wireless charging pad that snaps into place for perfectly aligned charging.',
     'Chargers',
     3999,
-    'https://picsum.photos/seed/magsafe-wireless-charger/600/600',
+    'https://images.unsplash.com/photo-1545235616-db3cd822ad8c?w=1080&q=80',
     75
   ),
   (
@@ -245,7 +245,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Slim 10000mAh portable battery with USB-C fast charging and dual output ports.',
     'Power Banks',
     2999,
-    'https://picsum.photos/seed/power-bank-10000mah/600/600',
+    'https://images.unsplash.com/photo-1566554738544-d962991c3fee?w=1080&q=80',
     60
   ),
   (
@@ -254,7 +254,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Soft-touch silicone case available in a range of colors with a microfiber lining.',
     'Cases',
     1499,
-    'https://picsum.photos/seed/silicone-case/600/600',
+    'https://images.unsplash.com/photo-1535157412991-2ef801c1748b?w=1080&q=80',
     110
   ),
   (
@@ -263,7 +263,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Strong magnetic vent mount that holds your phone securely while you drive.',
     'Mounts',
     1999,
-    'https://picsum.photos/seed/magnetic-car-mount/600/600',
+    'https://images.unsplash.com/photo-1771227241320-8fc5388259c7?w=1080&q=80',
     80
   ),
   (
@@ -272,7 +272,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'True wireless earbuds with active noise cancellation and a 30-hour charging case.',
     'Audio',
     4999,
-    'https://picsum.photos/seed/wireless-earbuds/600/600',
+    'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=1080&q=80',
     45
   ),
   (
@@ -281,7 +281,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Pocket-sized Bluetooth speaker with punchy sound and 12 hours of playback.',
     'Audio',
     3499,
-    'https://picsum.photos/seed/bluetooth-speaker-mini/600/600',
+    'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=1080&q=80',
     55
   ),
   (
@@ -290,7 +290,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Collapsible phone grip and stand that sticks to the back of your case.',
     'Grips',
     899,
-    'https://picsum.photos/seed/popsocket-grip/600/600',
+    'https://images.unsplash.com/photo-1760744633470-86915d6446e3?w=1080&q=80',
     130
   ),
   (
@@ -299,7 +299,7 @@ insert into public.products (name, slug, description, category, price_cents, ima
     'Tempered-glass privacy filter that keeps your screen visible only to you.',
     'Screen Protectors',
     1499,
-    'https://picsum.photos/seed/privacy-screen-protector/600/600',
+    'https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?w=1080&q=80',
     95
   )
 on conflict (slug) do nothing;

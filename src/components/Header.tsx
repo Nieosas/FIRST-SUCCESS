@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useCart } from "@/components/cart-context";
 import { createClient } from "@/lib/supabase/client";
@@ -12,7 +12,6 @@ export function Header() {
   const configured = isSupabaseConfigured();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(configured);
-  const [busy, setBusy] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -29,28 +28,6 @@ export function Header() {
 
     return () => sub.subscription.unsubscribe();
   }, [configured]);
-
-  const signInWithGoogle = useCallback(async () => {
-    setBusy(true);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) console.error(error);
-    } finally {
-      setBusy(false);
-    }
-  }, []);
-
-  const signOut = useCallback(async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    setMenuOpen(false);
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur">
@@ -115,30 +92,37 @@ export function Header() {
                     {user.email}
                   </div>
                   <Link
+                    href="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100"
+                  >
+                    Profile
+                  </Link>
+                  <Link
                     href="/orders"
                     onClick={() => setMenuOpen(false)}
                     className="block rounded-md px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100"
                   >
                     My orders
                   </Link>
-                  <button
-                    onClick={signOut}
-                    className="block w-full rounded-md px-3 py-2 text-left text-sm text-red-600 hover:bg-zinc-100"
+                  <Link
+                    href="/logout"
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-md px-3 py-2 text-sm text-red-600 hover:bg-zinc-100"
                   >
                     Sign out
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
           ) : (
-            <button
-              onClick={signInWithGoogle}
-              disabled={busy}
-              className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60"
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50"
             >
               <GoogleIcon />
-              {busy ? "Signing in…" : "Sign in"}
-            </button>
+              Sign in
+            </Link>
           )}
         </div>
       </div>
